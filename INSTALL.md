@@ -3,8 +3,8 @@ Installation
 
 When installing iris-agg-regrid, you must point to the include directory:
 
-  python setup.py build_ext -I/path/to/agg24/source/include
-  python setup.py install
+      python setup.py build_ext -I/path/to/agg24/source/include
+      python setup.py install
 
 Dependencies
 ------------
