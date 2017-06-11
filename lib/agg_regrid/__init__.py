@@ -1,19 +1,19 @@
-# (C) British Crown Copyright 2015, Met Office
+# (C) British Crown Copyright 2015 - 2017, Met Office
 #
-# This file is part of iris-extras.
+# This file is part of agg-regrid.
 #
-# iris-extras is free software: you can redistribute it and/or modify it under
+# agg-regrid is free software: you can redistribute it and/or modify it under
 # the terms of the GNU Lesser General Public License as published by the
 # Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# iris-extras is distributed in the hope that it will be useful,
+# agg-regrid is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with iris-extras.  If not, see <http://www.gnu.org/licenses/>.
+# along with agg-regrid.  If not, see <http://www.gnu.org/licenses/>.
 """A package for experimental regridding functionality."""
 
 from __future__ import (absolute_import, division, print_function)
@@ -32,7 +32,7 @@ from iris.analysis._interpolation import snapshot_grid, get_xy_dim_coords
 from ._agg import raster as agg_raster
 
 
-__version__ = '0.2.0-dev'
+__version__ = '0.2.dev0'
 
 
 class AreaWeighted(object):
