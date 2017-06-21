@@ -11,10 +11,10 @@ NAME = 'agg_regrid'
 DIR = os.path.abspath(os.path.dirname(__file__))
 
 extensions = [Extension(name='{}._agg'.format(NAME),
-                        sources=[os.path.join(DIR, 'lib', NAME, '_agg.pyx'),
-                                 os.path.join(DIR, 'lib', NAME,
+                        sources=[os.path.join(DIR, NAME, '_agg.pyx'),
+                                 os.path.join(DIR, NAME,
                                               '_agg_raster.cpp')],
-                        include_dirs=[os.path.join(DIR, 'lib', NAME),
+                        include_dirs=[os.path.join(DIR, NAME),
                                       os.path.join(DIR, 'extern', 'agg-2.4',
                                                    'include'),
                                       np.get_include()],
@@ -23,7 +23,7 @@ extensions = [Extension(name='{}._agg'.format(NAME),
 
 def extract_version():
     version = None
-    fname = os.path.join(DIR, 'lib', NAME, '__init__.py')
+    fname = os.path.join(DIR, NAME, '__init__.py')
     with open(fname, 'r') as fi:
         for line in fi:
             if (line.startswith('__version__')):
@@ -43,7 +43,6 @@ args = dict(
     version=extract_version(),
     author='UK Met Office',
     packages=find_packages(),
-    package_dir={'': 'lib'},
     ext_modules=cythonize(extensions),
     classifiers=[
         'Development Status :: 3 - Alpha',
