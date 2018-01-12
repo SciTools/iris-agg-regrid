@@ -1,5 +1,5 @@
 /*
-# (C) British Crown Copyright 2015 - 2017, Met Office
+# (C) British Crown Copyright 2015 - 2018, Met Office
 #
 # This file is part of agg-regrid.
 #

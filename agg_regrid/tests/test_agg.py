@@ -1,19 +1,19 @@
-# (C) British Crown Copyright 2015, Met Office
+# (C) British Crown Copyright 2015 - 2018, Met Office
 #
-# This file is part of iris-extras.
+# This file is part of agg-regrid.
 #
-# iris-extras is free software: you can redistribute it and/or modify it under
+# agg-regrid is free software: you can redistribute it and/or modify it under
 # the terms of the GNU Lesser General Public License as published by the
 # Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# iris-extras is distributed in the hope that it will be useful,
+# agg-regrid is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with iris-extras.  If not, see <http://www.gnu.org/licenses/>.
+# along with agg-regrid.  If not, see <http://www.gnu.org/licenses/>.
 """Tests for the `agg_regrid.agg` function."""
 
 from __future__ import (absolute_import, division, print_function)
@@ -221,10 +221,10 @@ class TestRegridSingleLevel(unittest.TestCase):
         # Expected source points per target grid cell.
         tmp = data[1:-1, 1:-1]
         shape = (-1, 2, 3)
-        cells = [tmp[slice(0, 2), slice(0, 3)].reshape(shape),       # tlhc
-                 tmp[slice(0, 2), slice(3, None)].reshape(shape),    # trhc
-                 tmp[slice(2, None), slice(0, 3)].reshape(shape),    # blhc
-                 tmp[slice(2, None), slice(3, None)].reshape(shape)] # brhc
+        cells = [tmp[slice(0, 2), slice(0, 3)].reshape(shape),        # tlhc
+                 tmp[slice(0, 2), slice(3, None)].reshape(shape),     # trhc
+                 tmp[slice(2, None), slice(0, 3)].reshape(shape),     # blhc
+                 tmp[slice(2, None), slice(3, None)].reshape(shape)]  # brhc
         cells = ma.vstack(cells)
         # Expected fractional weighted result.
         num = (cells * weights).sum(axis=(1, 2))
@@ -254,13 +254,13 @@ class TestRegridSingleLevel(unittest.TestCase):
 
     def test_regrid_ok_src_masked(self):
         self.data = ma.asarray(self.data)
-        self.data[2, 3] = ma.masked # tlhc 1x masked of 6x src cells
-        self.data[2, 4] = ma.masked # trhc 2x masked of 6x src cells
+        self.data[2, 3] = ma.masked  # tlhc 1x masked of 6x src cells
+        self.data[2, 4] = ma.masked  # trhc 2x masked of 6x src cells
         self.data[2, 5] = ma.masked
-        self.data[3, 2] = ma.masked # blhc 3x masked of 6x src cells
+        self.data[3, 2] = ma.masked  # blhc 3x masked of 6x src cells
         self.data[3, 3] = ma.masked
         self.data[4, 3] = ma.masked
-        self.data[3, 4] = ma.masked # brhc 4x masked of 6x src cells
+        self.data[3, 4] = ma.masked  # brhc 4x masked of 6x src cells
         self.data[3, 5] = ma.masked
         self.data[4, 4] = ma.masked
         self.data[4, 5] = ma.masked

@@ -4,7 +4,6 @@ import os
 from setuptools import Extension, find_packages, setup
 
 from Cython.Build import cythonize
-import numpy as np
 
 
 NAME = 'agg_regrid'
