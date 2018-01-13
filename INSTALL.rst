@@ -6,8 +6,7 @@ https://github.com/SciTools-incubator/iris-agg-regrid.
 
 To build and install ``agg-regrid`` from source::
 
-    python setup.py build_ext
-    python setup.py install
+    python setup.py install --user
 
 Build dependencies
 ------------------
