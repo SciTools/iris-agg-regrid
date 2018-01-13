@@ -28,8 +28,9 @@ install:
   - conda create --quiet -n ${ENV_NAME} python=${TRAVIS_PYTHON_VERSION} pip
   - source activate ${ENV_NAME}
 
-  # Install coveralls for test coverage
-  # ----------------------------------
+  # Customise the testing environment 
+  # ---------------------------------
+  - conda install --quiet --file requirements.txt
   - pip install coveralls
 
   # Build the package
