@@ -20,6 +20,11 @@
 #ifndef _AGG_RASTER_H
 #define _AGG_RASTER_H
 
+/*
+# The header file "stdint.h" was not available within Microsoft
+# Visual Studio prior to the release of the vc2010 runtime. This
+# workaround circumvents this issue.
+*/
 #ifdef _MSC_VER
     #ifndef _MSC_STDINT_H_
         #if _MSC_VER < 1300
