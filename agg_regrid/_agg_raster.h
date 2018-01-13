@@ -20,7 +20,19 @@
 #ifndef _AGG_RASTER_H
 #define _AGG_RASTER_H
 
-#include <stdint.h>
+#ifdef _MSC_VER
+    #ifndef _MSC_STDINT_H_
+        #if _MSC_VER < 1300
+           typedef unsigned char     uint8_t;
+           typedef unsigned int      uint32_t;
+        #else
+           typedef unsigned __int8   uint8_t;
+           typedef unsigned __int32  uint32_t;
+        #endif
+    #endif
+#else
+   #include <stdint.h>
+#endif
 
 
 void _raster(uint8_t *weights, const double *xi, const double *yi,
