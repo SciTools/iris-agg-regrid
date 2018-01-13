@@ -12,7 +12,7 @@ To build and install ``agg-regrid`` from source::
 Build dependencies
 ------------------
 
-These are the external packages that you will require to have installed
+The following external packages require to be installed
 before building ``agg-regrid``
 
 - cython (https://github.com/cython/cython)
@@ -22,7 +22,7 @@ before building ``agg-regrid``
 Runtime dependencies
 --------------------
 
-These are the external packages that you will require to have installed
+The following external packages require to be installed
 before running ``agg-regrid``
 
 - iris (https://github.com/SciTools/iris)
