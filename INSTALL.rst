@@ -1,14 +1,29 @@
 Installation
 ============
 
-To build and install agg-regrid from source::
+The latest ``agg-regrid`` source release is available from
+https://github.com/SciTools-incubator/iris-agg-regrid.
+
+To build and install ``agg-regrid`` from source::
 
     python setup.py build_ext
     python setup.py install
 
+Build dependencies
+------------------
 
-Dependencies
-------------
+These are the external packages that you will require to have installed
+before building ``agg-regrid``
 
-`Anti-Grain Geometry library v2.4 <http://www.antigrain.com/agg-2.4.zip>`__
-2D vector graphics library. Agg produces pixel images in memory from vectorial data.
+- cython (https://github.com/cython/cython)
+- numpy (http://numpy.scipy.org/)
+- setuptools (http://pypi.python.org/pypi/setuptools/)
+
+Runtime dependencies
+--------------------
+
+These are the external packages that you will require to have installed
+before running ``agg-regrid``
+
+- iris (https://github.com/SciTools/iris)
+
