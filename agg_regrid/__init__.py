@@ -341,7 +341,7 @@ def agg(data, sx_points, sx_bounds, sy_points, sy_bounds,
             np.testing.assert_allclose(delta, mean_delta, atol=atol)
         except AssertionError as e:
             emsg = 'Expected src {}-coordinate points to be regular{}'
-            raise ValueError(emsg.format(kind, e.message))
+            raise ValueError(emsg.format(kind, e))
         return bounds.min(), mean_delta
 
     sx0, sdx = start_and_delta(sx_points, sx_bounds, 'x')
@@ -379,8 +379,8 @@ def agg(data, sx_points, sx_bounds, sy_points, sy_bounds,
     # XXX: Cythonise this ...
     #
     dims = (1, 2)
-    for yi in xrange(gny):
-        for xi in xrange(gnx):
+    for yi in range(gny):
+        for xi in range(gnx):
             yi_stop = yi + 2
             xi_stop = xi + 2
             # Get the bounding box of the grid cell in source coordinates.
