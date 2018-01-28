@@ -17,7 +17,7 @@
 """Tests for the `agg_regrid._agg.raster` function."""
 
 from __future__ import (absolute_import, division, print_function)
-from six.moves import (filter, input, map, range, xrange, zip)
+from six.moves import (filter, input, map, range, xrange, zip)  # noqa
 from six import assertRaisesRegex
 
 import numpy as np

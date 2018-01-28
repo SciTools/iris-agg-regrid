@@ -17,7 +17,7 @@
 """Tests for the `agg_regrid.agg` function."""
 
 from __future__ import (absolute_import, division, print_function)
-from six.moves import (filter, input, map, range, xrange, zip)
+from six.moves import (filter, input, map, range, xrange, zip)  # noqa
 
 import numpy as np
 import numpy.ma as ma
