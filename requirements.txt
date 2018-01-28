@@ -3,3 +3,4 @@ setuptools
 cython
 numpy >=1.11
 iris
+mock

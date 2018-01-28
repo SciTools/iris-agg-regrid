@@ -14,7 +14,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with agg-regrid.  If not, see <http://www.gnu.org/licenses/>.
-"""Tests for the `agg_regrid._agg.raster` function."""
+"""Unit tests for the `agg_regrid._agg.raster` function."""
 
 from __future__ import (absolute_import, division, print_function)
 from six.moves import (filter, input, map, range, xrange, zip)  # noqa
