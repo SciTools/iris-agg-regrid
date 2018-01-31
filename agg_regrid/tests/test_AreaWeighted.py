@@ -21,7 +21,10 @@ from six.moves import (filter, input, map, range, xrange, zip)  # noqa
 
 import unittest
 
-import mock
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 
 from agg_regrid import AreaWeighted
 
