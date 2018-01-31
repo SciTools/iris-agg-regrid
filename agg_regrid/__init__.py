@@ -89,9 +89,12 @@ class _AreaWeightedRegridder(object):
 
         """
         if not isinstance(src_grid_cube, iris.cube.Cube):
-            raise TypeError('This source grid must be a cube.')
+            emsg = 'The source grid must be a cube, got {}.'
+            raise TypeError(emsg.format(type(src_grid_cube)))
+
         if not isinstance(tgt_grid_cube, iris.cube.Cube):
-            raise TypeError('The target grid must be a cube.')
+            emsg = 'The target grid must be a cube, got {}.'
+            raise TypeError(emsg.format(type(tgt_grid_cube)))
 
         # Snapshot the state of the grid cubes to ensure that the regridder
         # is impervious to external changes to the original cubes.
@@ -99,9 +102,9 @@ class _AreaWeightedRegridder(object):
         self._gx, self._gy = snapshot_grid(tgt_grid_cube)
 
         # Check the grid cube coordinate system.
-        if self._gx.coord_system is None:
-            msg = 'The grid cube requires a native coordinate system.'
-            raise ValueError(msg)
+        if self._gx.coord_system is None or self._gy.coord_system is None:
+            emsg = 'The grid cube requires a native coordinate system.'
+            raise ValueError(emsg)
 
         # Cache the grid bounds converted to the source crs.
         self._gx_bounds = None
