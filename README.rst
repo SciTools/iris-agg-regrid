@@ -1,7 +1,7 @@
 agg-regrid
 ==========
 
-|Travis|_ |Coveralls|_
+|Coveralls|_ |Travis|_ |Coveralls|_
 
 \(C) British Crown Copyright 2015 - 2018, Met Office.
 
