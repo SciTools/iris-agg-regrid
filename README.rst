@@ -5,7 +5,7 @@ agg-regrid
 
 \(C) British Crown Copyright 2015 - 2018, Met Office.
 
-A cross coordinate system, conservative area-weighted regridder, which uses the Anti-Grain Geometry (`AGG <http://agg.sourceforge.net/antigrain.com/index.html>`__) to rasterise the conversion of an `_Iris<https://github.com/SciTools/iris>`__ source cube to a target grid.
+A cross coordinate system, conservative area-weighted regridder, which uses the Anti-Grain Geometry (`AGG <http://agg.sourceforge.net/antigrain.com/index.html>`__) to rasterise the conversion of an `Iris<https://github.com/SciTools/iris>`__ source cube to a target grid.
 
 License
 -------
