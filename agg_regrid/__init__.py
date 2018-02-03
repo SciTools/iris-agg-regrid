@@ -98,12 +98,17 @@ class _AreaWeightedRegridder(object):
 
         # Snapshot the state of the grid cubes to ensure that the regridder
         # is impervious to external changes to the original cubes.
-        self._src_grid = snapshot_grid(src_grid_cube)
+        self._sx, self._sy = snapshot_grid(src_grid_cube)
         self._gx, self._gy = snapshot_grid(tgt_grid_cube)
 
-        # Check the grid cube coordinate system.
+        # Check the source grid cube coordinate system.
+        if self._sx.coord_system is None or self._sy.coord_system is None:
+            emsg = 'The source grid cube requires a native coordinate system.'
+            raise ValueError(emsg)
+
+        # Check the target grid cube coordinate system.
         if self._gx.coord_system is None or self._gy.coord_system is None:
-            emsg = 'The grid cube requires a native coordinate system.'
+            emsg = 'The target grid cube requires a native coordinate system.'
             raise ValueError(emsg)
 
         # Cache the grid bounds converted to the source crs.
@@ -138,17 +143,16 @@ class _AreaWeightedRegridder(object):
         """
         # Sanity check the supplied source cube.
         if not isinstance(src_cube, iris.cube.Cube):
-            raise TypeError('The source must be a cube.')
+            emsg = 'The source must be a cube, got {}.'
+            raise TypeError(emsg.format(type(src_cube)))
 
         # Get the source cube x and y coordinates.
         sx, sy = get_xy_dim_coords(src_cube)
-        if (sx, sy) != self._src_grid:
+
+        if (sx, sy) != (self._sx, self._sy):
             emsg = 'The source cube is not defined on the same source grid ' \
                 'as this regridder.'
             raise ValueError(emsg)
-        if sx.coord_system is None:
-            msg = 'The source cube requires a native coordinate system.'
-            raise ValueError(msg)
 
         # Convert the contiguous bounds of the grid to the source crs.
         gxx, gyy = np.meshgrid(self._gx.contiguous_bounds(),
@@ -182,7 +186,6 @@ class _AreaWeightedRegridder(object):
         #
         result_cube = iris.cube.Cube(result)
         result_cube.metadata = copy.deepcopy(src_cube.metadata)
-        coord_mapping = {}
 
         def copy_coords(coords, add_coord):
             for coord in coords:
@@ -195,7 +198,6 @@ class _AreaWeightedRegridder(object):
                     continue
                 result_coord = coord.copy()
                 add_coord(result_coord, dims)
-                coord_mapping[id(coord)] = result_coord
 
         copy_coords(src_cube.dim_coords, result_cube.add_dim_coord)
         copy_coords(src_cube.aux_coords, result_cube.add_aux_coord)
