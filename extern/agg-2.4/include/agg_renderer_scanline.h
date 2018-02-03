@@ -16,6 +16,8 @@
 #ifndef AGG_RENDERER_SCANLINE_INCLUDED
 #define AGG_RENDERER_SCANLINE_INCLUDED
 
+#include <limits>
+#include <cstdlib>
 #include "agg_basics.h"
 #include "agg_renderer_base.h"
 
@@ -65,7 +67,7 @@ namespace agg
             // "rgba8" is needed. Otherwise it will be implicitly 
             // converted in the loop many times.
             //----------------------
-            typename BaseRenderer::color_type ren_color(color);
+            typename BaseRenderer::color_type ren_color = color;
 
             sl.reset(ras.min_x(), ras.max_x());
             while(ras.sweep_scanline(sl))
@@ -745,7 +747,7 @@ namespace agg
                                0, 
                                sl_len * sizeof(cover_type));
 
-                        int sl_y = 0x7FFFFFFF;
+                        int sl_y = std::numeric_limits<int>::max();
                         unsigned i;
                         for(i = 0; i < num_styles; i++)
                         {
