@@ -32,7 +32,7 @@ from iris.analysis._interpolation import snapshot_grid, get_xy_dim_coords
 from ._agg import raster as agg_raster
 
 
-__version__ = '0.3.dev0'
+__version__ = '0.2.2'
 
 
 class AreaWeighted(object):
