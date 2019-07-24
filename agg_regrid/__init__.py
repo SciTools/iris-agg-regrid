@@ -35,14 +35,33 @@ from ._agg import raster as agg_raster
 __version__ = '0.3.dev0'
 
 
-class AreaWeighted(object):
-    """
-    The Anti-Grain Geometry (AGG) regridding scheme for performing
-    area-weighted conservative regridding.
+# Default to using an 8x8 pixel buffer for each source grid cell.
+DEFAULT_BUFFER_DEPTH = 8
 
-    """
+
+class AreaWeighted(object):
+    def __init__(self, buffer_depth=None):
+        """
+        Anti-Grain Geometry (AGG) regridding scheme for performing
+        area-weighted conservative regridding.
+
+        Kwargs:
+
+        * buffer_depth (int):
+            The depth (N) specifying the NxN pixel buffer to be used by AGG
+            to represent each source grid cell. Increase the buffer depth for
+            regrid operations involving a high resolution target grid compared
+            to a low resolution source grid.
+
+        """
+        if buffer_depth is None:
+            buffer_depth = DEFAULT_BUFFER_DEPTH
+
+        self.buffer_depth = buffer_depth
+
     def __repr__(self):
-        return '{}()'.format(self.__class__.__name__)
+        msg = '{}(buffer_depth={})'
+        return msg.format(self.__class__.__name__, self.buffer_depth)
 
     def regridder(self, src_grid, tgt_grid):
         """
@@ -66,7 +85,8 @@ class AreaWeighted(object):
             as the source grid defined for regridding to the target grid.
 
         """
-        return _AreaWeightedRegridder(src_grid, tgt_grid)
+        return _AreaWeightedRegridder(src_grid, tgt_grid,
+                                      buffer_depth=self.buffer_depth)
 
 
 class _AreaWeightedRegridder(object):
@@ -74,7 +94,7 @@ class _AreaWeightedRegridder(object):
     This class provides support for performing area-weighted regridding.
 
     """
-    def __init__(self, src_grid_cube, tgt_grid_cube):
+    def __init__(self, src_grid_cube, tgt_grid_cube, buffer_depth=None):
         """
         Creates a area-weighted regridder which uses an Anti-Grain
         Geometry (AGG) backend to rasterise the conversion between the source
@@ -87,6 +107,14 @@ class _AreaWeightedRegridder(object):
         * tgt_grid_cube:
             The :class:`~iris.cube.Cube` providing the target grid.
 
+        Kwargs:
+
+        * buffer_depth (int):
+            The depth (N) specifying the NxN pixel buffer to be used by AGG
+            to represent each source grid cell. Increase the buffer depth for
+            regrid operations involving a high resolution target grid compared
+            to a low resolution source grid.
+
         """
         if not isinstance(src_grid_cube, iris.cube.Cube):
             emsg = 'The source grid must be a cube, got {}.'
@@ -95,6 +123,11 @@ class _AreaWeightedRegridder(object):
         if not isinstance(tgt_grid_cube, iris.cube.Cube):
             emsg = 'The target grid must be a cube, got {}.'
             raise TypeError(emsg.format(type(tgt_grid_cube)))
+
+        if buffer_depth is None:
+            buffer_depth = DEFAULT_BUFFER_DEPTH
+
+        self.buffer_depth = buffer_depth
 
         # Snapshot the state of the grid cubes to ensure that the regridder
         # is impervious to external changes to the original cubes.
@@ -179,7 +212,7 @@ class _AreaWeightedRegridder(object):
         # Perform the regrid.
         result = agg(src_cube.data, sx.points, self._sx_bounds,
                      sy.points, self._sy_bounds, sx_dim, sy_dim,
-                     self._gx_bounds, self._gy_bounds)
+                     self._gx_bounds, self._gy_bounds, self.buffer_depth)
 
         #
         # XXX: Need to deal the factories when constructing result cube.
@@ -206,7 +239,7 @@ class _AreaWeightedRegridder(object):
 
 
 def agg(data, sx_points, sx_bounds, sy_points, sy_bounds,
-        sx_dim, sy_dim, gx_bounds, gy_bounds):
+        sx_dim, sy_dim, gx_bounds, gy_bounds, depth):
     """
     Perform a area-weighted regrid of the data using an Anti-Grain
     Geometry (AGG) backend to rasterise the conversion between the source
@@ -232,13 +265,16 @@ def agg(data, sx_points, sx_bounds, sy_points, sy_bounds,
     * sx_dim:
         The data dimension of the x-coordinate.
     * sy_dim:
-        The data dimensoin of the y-coordinate.
+        The data dimension of the y-coordinate.
     * gx_bounds:
         The target grid x-coordinate contiguous bounds, which must be 2d.
         The dimensionality of the target grid is assumed to be in (y, x) order.
     * gy_bounds:
         The target grid y-coordinate contiguous bounds, which must be 2d.
         The dimensionality of the target grid is assumed to be in (y, x) order.
+    * depth:
+        The depth (N) specifying the NxN pixel buffer to represent each source
+        grid cell.
 
     Returns:
         The data with same horizontal dimensionality as the target grid. The
@@ -343,7 +379,7 @@ def agg(data, sx_points, sx_bounds, sy_points, sy_bounds,
         rtol = 0.002
         try:
             atol = mean_delta * rtol
-            np.testing.assert_allclose(delta, mean_delta, atol=atol)
+            np.testing.assert_allclose(delta, mean_delta, atol=abs(atol))
         except AssertionError as e:
             emsg = 'Expected src {}-coordinate points to be regular{}'
             raise ValueError(emsg.format(kind, e))
@@ -380,6 +416,14 @@ def agg(data, sx_points, sx_bounds, sy_points, sy_bounds,
     result_shape = tuple(result_shape)
     result.mask = True
 
+    def _sum_chunk(x, chunk_size, axis=-1):
+        shape = x.shape
+        if axis < 0:
+            axis += x.ndim
+        shape = shape[:axis] + (-1, chunk_size) + shape[axis + 1:]
+        x = x.reshape(shape)
+        return x.sum(axis=axis + 1)
+
     #
     # XXX: Cythonise this ...
     #
@@ -408,10 +452,12 @@ def agg(data, sx_points, sx_bounds, sy_points, sy_bounds,
             # overlapped by this grid cell.
             cell_xi -= xi_min
             cell_yi -= yi_min
-            weights = np.zeros((yi_max - yi_min, xi_max - xi_min),
-                               dtype=np.uint8)
-            agg_raster(weights, cell_xi, cell_yi)
-            weights = weights / 255
+            wshape = (depth*(yi_max-yi_min), depth*(xi_max-xi_min))
+            weights = np.zeros(wshape, dtype=np.uint8)
+            agg_raster(weights, depth*cell_xi, depth*cell_yi)
+            if depth > 1:
+                weights = _sum_chunk(_sum_chunk(weights, depth), depth, 0)
+            weights = weights / (depth*depth*255)
             # Now calculate the weighted result for this grid cell.
             tmp = data[:, yi_min:yi_max, xi_min:xi_max]
             result[:, yi, xi] = (tmp * weights).sum(axis=dims) / weights.sum()
