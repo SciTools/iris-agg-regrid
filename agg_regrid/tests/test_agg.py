@@ -251,8 +251,7 @@ class TestRegridDepth(unittest.TestCase):
 
     def test(self):
         for depth in [2**i for i in range(10)]:
-            result = agg(*self.args, depth)
-            expected = self._expected(depth)
+            result = agg(*self.args, depth=depth)
             assert_array_equal(result, self._expected(depth))
 
 
