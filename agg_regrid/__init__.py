@@ -94,6 +94,7 @@ class _AreaWeightedRegridder(object):
     This class provides support for performing area-weighted regridding.
 
     """
+
     def __init__(self, src_grid_cube, tgt_grid_cube, buffer_depth=None):
         """
         Creates a area-weighted regridder which uses an Anti-Grain
