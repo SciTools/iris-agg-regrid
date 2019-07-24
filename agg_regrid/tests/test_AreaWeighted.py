@@ -26,7 +26,7 @@ try:
 except ImportError:
     import mock
 
-from agg_regrid import AreaWeighted
+from agg_regrid import AreaWeighted, DEFAULT_BUFFER_DEPTH
 
 
 class Test(unittest.TestCase):
@@ -34,6 +34,7 @@ class Test(unittest.TestCase):
         self.src = mock.sentinel.src
         self.tgt = mock.sentinel.tgt
         self.regridder = mock.sentinel.regridder
+        self.depth = DEFAULT_BUFFER_DEPTH
 
     def test_regridder(self):
         regridder = 'agg_regrid._AreaWeightedRegridder'
@@ -42,7 +43,7 @@ class Test(unittest.TestCase):
             scheme = AreaWeighted()
             result = scheme.regridder(self.src, self.tgt)
             self.assertEqual(result, self.regridder)
-            expected = [mock.call(self.src, self.tgt)]
+            expected = [mock.call(self.src, self.tgt, buffer_depth=self.depth)]
             self.assertEqual(mocker.mock_calls, expected)
 
 

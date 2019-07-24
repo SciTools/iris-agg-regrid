@@ -28,7 +28,8 @@ try:
 except ImportError:
     import mock
 
-from agg_regrid import _AreaWeightedRegridder as Regridder
+from agg_regrid import (_AreaWeightedRegridder as Regridder,
+                        DEFAULT_BUFFER_DEPTH)
 
 
 class Test(unittest.TestCase):
@@ -143,6 +144,7 @@ class Test___call__(unittest.TestCase):
         self.side_effect = (self.src_grid, tgt_grid)
         self.snapshot_grid = 'agg_regrid.snapshot_grid'
         self.get_xy_dim_coords = 'agg_regrid.get_xy_dim_coords'
+        self.depth = DEFAULT_BUFFER_DEPTH
 
     def test_bad_src_cube(self):
         with mock.patch(self.snapshot_grid, side_effect=self.side_effect):
@@ -187,7 +189,8 @@ class Test___call__(unittest.TestCase):
         self.assertEqual(regridder._gx_bounds, gxx)
         self.assertEqual(regridder._gy_bounds, gyy)
         expected = [mock.call(self.data, self.sxp, self.sxb, self.syp,
-                              self.syb, self.sx_dim, self.sy_dim, gxx, gyy)]
+                              self.syb, self.sx_dim, self.sy_dim, gxx, gyy,
+                              self.depth)]
         self.assertEqual(magg.call_args_list, expected)
         cube = iris.cube.Cube(data)
         cube.metadata = self.metadata

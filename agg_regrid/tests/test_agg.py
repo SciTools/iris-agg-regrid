@@ -25,7 +25,7 @@ import numpy.ma as ma
 from numpy.testing import assert_array_equal
 import unittest
 
-from agg_regrid import agg
+from agg_regrid import agg, DEFAULT_BUFFER_DEPTH
 
 
 class TestDimensionality(unittest.TestCase):
@@ -39,6 +39,7 @@ class TestDimensionality(unittest.TestCase):
         self.sy_dim, self.sx_dim = 1, 2
         self.gx_bounds = np.empty((5, 5))
         self.gy_bounds = np.empty((5, 5))
+        self.depth = DEFAULT_BUFFER_DEPTH
 
     def test_src_x_points(self):
         sx_points = self.sx_points.reshape(1, -1)
@@ -47,7 +48,7 @@ class TestDimensionality(unittest.TestCase):
             agg(self.data, sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
-                self.gx_bounds, self.gy_bounds)
+                self.gx_bounds, self.gy_bounds, self.depth)
 
     def test_src_y_points(self):
         sy_points = self.sy_points.reshape(1, -1)
@@ -56,7 +57,7 @@ class TestDimensionality(unittest.TestCase):
             agg(self.data, self.sx_points, self.sx_bounds,
                 sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
-                self.gx_bounds, self.gy_bounds)
+                self.gx_bounds, self.gy_bounds, self.depth)
 
     def test_src_x_bounds(self):
         sx_bounds = self.sx_bounds.reshape(1, -1)
@@ -65,7 +66,7 @@ class TestDimensionality(unittest.TestCase):
             agg(self.data, self.sx_points, sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
-                self.gx_bounds, self.gy_bounds)
+                self.gx_bounds, self.gy_bounds, self.depth)
 
     def test_src_y_bounds(self):
         sy_bounds = self.sy_bounds.reshape(1, -1)
@@ -74,7 +75,7 @@ class TestDimensionality(unittest.TestCase):
             agg(self.data, self.sx_points, self.sx_bounds,
                 self.sy_points, sy_bounds,
                 self.sx_dim, self.sy_dim,
-                self.gx_bounds, self.gy_bounds)
+                self.gx_bounds, self.gy_bounds, self.depth)
 
     def test_data(self):
         data = self.data.flatten()
@@ -83,7 +84,7 @@ class TestDimensionality(unittest.TestCase):
             agg(data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
-                self.gx_bounds, self.gy_bounds)
+                self.gx_bounds, self.gy_bounds, self.depth)
 
     def test_src_x_dim(self):
         # Positive index beyond last dimension.
@@ -93,7 +94,7 @@ class TestDimensionality(unittest.TestCase):
             agg(self.data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 sx_dim, self.sy_dim,
-                self.gx_bounds, self.gy_bounds)
+                self.gx_bounds, self.gy_bounds, self.depth)
 
     def test_src_y_dim(self):
         # Negative index before first dimension.
@@ -103,7 +104,7 @@ class TestDimensionality(unittest.TestCase):
             agg(self.data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, sy_dim,
-                self.gx_bounds, self.gy_bounds)
+                self.gx_bounds, self.gy_bounds, self.depth)
 
     def test_grid_x_bounds(self):
         gx_bounds = self.gx_bounds.flatten()
@@ -112,7 +113,7 @@ class TestDimensionality(unittest.TestCase):
             agg(self.data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
-                gx_bounds, self.gy_bounds)
+                gx_bounds, self.gy_bounds, self.depth)
 
     def test_grid_y_bounds(self):
         gy_bounds = self.gy_bounds.flatten()
@@ -121,7 +122,7 @@ class TestDimensionality(unittest.TestCase):
             agg(self.data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
-                self.gx_bounds, gy_bounds)
+                self.gx_bounds, gy_bounds, self.depth)
 
 
 class TestShape(unittest.TestCase):
@@ -135,6 +136,7 @@ class TestShape(unittest.TestCase):
         self.sy_dim, self.sx_dim = 1, 2
         self.gx_bounds = np.empty((5, 5))
         self.gy_bounds = np.empty((5, 5))
+        self.depth = DEFAULT_BUFFER_DEPTH
 
     def test_src_x_points_and_bounds(self):
         sx_points = np.arange(self.nx - 1)
@@ -143,7 +145,7 @@ class TestShape(unittest.TestCase):
             agg(self.data, sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
-                self.gx_bounds, self.gy_bounds)
+                self.gx_bounds, self.gy_bounds, self.depth)
 
     def test_src_y_points_and_bounds(self):
         sy_points = np.arange(self.ny - 1)
@@ -152,7 +154,7 @@ class TestShape(unittest.TestCase):
             agg(self.data, self.sx_points, self.sx_bounds,
                 sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
-                self.gx_bounds, self.gy_bounds)
+                self.gx_bounds, self.gy_bounds, self.depth)
 
     def test_src_x_points_and_data(self):
         shape = list(self.shape)
@@ -163,7 +165,7 @@ class TestShape(unittest.TestCase):
             agg(data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
-                self.gx_bounds, self.gy_bounds)
+                self.gx_bounds, self.gy_bounds, self.depth)
 
     def test_src_y_points_and_data(self):
         shape = list(self.shape)
@@ -174,7 +176,7 @@ class TestShape(unittest.TestCase):
             agg(data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
-                self.gx_bounds, self.gy_bounds)
+                self.gx_bounds, self.gy_bounds, self.depth)
 
     def test_grid_x_bounds_and_y_bounds(self):
         shape = np.array(self.gy_bounds.shape) + 1
@@ -184,7 +186,73 @@ class TestShape(unittest.TestCase):
             agg(self.data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
-                self.gx_bounds, gy_bounds)
+                self.gx_bounds, gy_bounds, self.depth)
+
+
+class TestRegridDepth(unittest.TestCase):
+    def setUp(self):
+        # Source has points shape (y:6, x:8)
+        ny, nx = shape = (6, 8)
+        size = np.prod(shape)
+        self.data = np.arange(size).reshape(shape)
+        sx_points = np.arange(1, nx + 1) - 0.5
+        sx_bounds = np.arange(nx + 1)
+        sy_points = np.arange(1, ny + 1) - 0.5
+        sy_bounds = np.arange(ny + 1)
+        sy_dim, sx_dim = 0, 1
+        # Target grid has points shape (y:2, x:2)
+        gx_bounds = np.array([1.5, 4.0, 6.5], dtype=np.float64)
+        gy_bounds = np.array([1.5, 3.0, 4.5], dtype=np.float64)
+        gx_bounds, gy_bounds = np.meshgrid(gx_bounds, gy_bounds)
+        self.args = (self.data, sx_points, sx_bounds,
+                     sy_points, sy_bounds,
+                     sx_dim, sy_dim,
+                     gx_bounds, gy_bounds)
+
+    def _expected(self, depth):
+        data = self.data
+        # Expected raster weights per target grid cell.
+        # This is the (fractional) source cell contribution
+        # to each target cell
+        if depth == 1:
+            weights = np.array([[[63, 127, 127],   # tlhc
+                                 [127, 255, 255]],
+                                [[127, 127, 63],   # trhc)
+                                 [255, 255, 127]],
+                                [[127, 255, 255],  # blhc
+                                 [63, 127, 127]],
+                                [[255, 255, 127],  # brhc
+                                 [127, 127, 63]]], dtype=np.uint8)
+            weights = weights / 255
+        else:
+            weights = np.array([[[0.25, 0.5, 0.5],   # tlhc
+                                 [0.5, 1.0, 1.0]],
+                                [[0.5, 0.5, 0.25],   # trhc
+                                 [1.0, 1.0, 0.5]],
+                                [[0.5, 1.0, 1.0],    # blhc
+                                 [0.25, 0.5, 0.5]],
+                                [[1.0, 1.0, 0.5],    # brhc
+                                 [0.5, 0.5, 0.25]]])
+
+        # Expected source points per target grid cell.
+        tmp = data[1:-1, 1:-1]
+        shape = (-1, 2, 3)
+        cells = [tmp[slice(0, 2), slice(0, 3)].reshape(shape),        # tlhc
+                 tmp[slice(0, 2), slice(3, None)].reshape(shape),     # trhc
+                 tmp[slice(2, None), slice(0, 3)].reshape(shape),     # blhc
+                 tmp[slice(2, None), slice(3, None)].reshape(shape)]  # brhc
+        cells = ma.vstack(cells)
+        # Expected fractional weighted result.
+        num = (cells * weights).sum(axis=(1, 2))
+        dom = weights.sum(axis=(1, 2))
+        expected = num / dom
+        expected = ma.asarray(expected.reshape(2, 2))
+        return expected
+
+    def test(self):
+        for depth in [2**i for i in range(10)]:
+            result = agg(*self.args, depth=depth)
+            assert_array_equal(result, self._expected(depth))
 
 
 class TestRegridSingleLevel(unittest.TestCase):
@@ -202,6 +270,7 @@ class TestRegridSingleLevel(unittest.TestCase):
         gx_bounds = np.array([1.5, 4.0, 6.5], dtype=np.float64)
         gy_bounds = np.array([1.5, 3.0, 4.5], dtype=np.float64)
         self.gx_bounds, self.gy_bounds = np.meshgrid(gx_bounds, gy_bounds)
+        self.depth = 1
 
     def _expected(self, transpose=False):
         data = self.data
@@ -210,13 +279,13 @@ class TestRegridSingleLevel(unittest.TestCase):
         # Expected raster weights per target grid cell.
         # This is the (fractional) source cell contribution
         # to each target cell (out of 255)
-        weights = np.array([[[63, 127, 127],   # top left hand cell (tlhc)
+        weights = np.array([[[63, 127, 127],   # tlhc
                              [127, 255, 255]],
-                            [[127, 127, 63],   # top right hand cell (trhc)
+                            [[127, 127, 63],   # trhc
                              [255, 255, 127]],
-                            [[127, 255, 255],  # bottom left hand cell (blhc)
+                            [[127, 255, 255],  # blhc
                              [63, 127, 127]],
-                            [[255, 255, 127],  # bottom right hand cell (brhc)
+                            [[255, 255, 127],  # brhc
                              [127, 127, 63]]], dtype=np.uint8)
         weights = weights / 255
         # Expected source points per target grid cell.
@@ -240,7 +309,7 @@ class TestRegridSingleLevel(unittest.TestCase):
         result = agg(self.data, self.sx_points, self.sx_bounds,
                      self.sy_points, self.sy_bounds,
                      self.sx_dim, self.sy_dim,
-                     self.gx_bounds, self.gy_bounds)
+                     self.gx_bounds, self.gy_bounds, self.depth)
         assert_array_equal(result, self._expected())
 
     def test_regrid_ok_transpose(self):
@@ -249,7 +318,7 @@ class TestRegridSingleLevel(unittest.TestCase):
         result = agg(self.data, self.sx_points, self.sx_bounds,
                      self.sy_points, self.sy_bounds,
                      sx_dim, sy_dim,
-                     self.gx_bounds, self.gy_bounds)
+                     self.gx_bounds, self.gy_bounds, self.depth)
         expected = self._expected(transpose=True)
         assert_array_equal(result, expected)
 
@@ -268,7 +337,7 @@ class TestRegridSingleLevel(unittest.TestCase):
         result = agg(self.data, self.sx_points, self.sx_bounds,
                      self.sy_points, self.sy_bounds,
                      self.sx_dim, self.sy_dim,
-                     self.gx_bounds, self.gy_bounds)
+                     self.gx_bounds, self.gy_bounds, self.depth)
         assert_array_equal(result, self._expected())
 
     def test_regrid_ok_src_x_points_cast(self):
@@ -276,7 +345,7 @@ class TestRegridSingleLevel(unittest.TestCase):
         result = agg(self.data, self.sx_points, self.sx_bounds,
                      self.sy_points, self.sy_bounds,
                      self.sx_dim, self.sy_dim,
-                     self.gx_bounds, self.gy_bounds)
+                     self.gx_bounds, self.gy_bounds, self.depth)
         assert_array_equal(result, self._expected())
 
     def test_regrid_ok_src_y_points_cast(self):
@@ -284,7 +353,7 @@ class TestRegridSingleLevel(unittest.TestCase):
         result = agg(self.data, self.sx_points, self.sx_bounds,
                      self.sy_points, self.sy_bounds,
                      self.sx_dim, self.sy_dim,
-                     self.gx_bounds, self.gy_bounds)
+                     self.gx_bounds, self.gy_bounds, self.depth)
         assert_array_equal(result, self._expected())
 
     def test_regrid_ok_negative_sx_dim(self):
@@ -292,7 +361,7 @@ class TestRegridSingleLevel(unittest.TestCase):
         result = agg(self.data, self.sx_points, self.sx_bounds,
                      self.sy_points, self.sy_bounds,
                      self.sx_dim, self.sy_dim,
-                     self.gx_bounds, self.gy_bounds)
+                     self.gx_bounds, self.gy_bounds, self.depth)
         assert_array_equal(result, self._expected())
 
     def test_regrid_ok_negative_sy_dim(self):
@@ -300,7 +369,7 @@ class TestRegridSingleLevel(unittest.TestCase):
         result = agg(self.data, self.sx_points, self.sx_bounds,
                      self.sy_points, self.sy_bounds,
                      self.sx_dim, self.sy_dim,
-                     self.gx_bounds, self.gy_bounds)
+                     self.gx_bounds, self.gy_bounds, self.depth)
         assert_array_equal(result, self._expected())
 
     def test_regrid_ok_grid_tlhc_out_of_bounds(self):
@@ -308,7 +377,7 @@ class TestRegridSingleLevel(unittest.TestCase):
         result = agg(self.data, self.sx_points, self.sx_bounds,
                      self.sy_points, self.sy_bounds,
                      self.sx_dim, self.sy_dim,
-                     self.gx_bounds, self.gy_bounds)
+                     self.gx_bounds, self.gy_bounds, self.depth)
         expected = self._expected()
         expected[0, 0] = ma.masked
         assert_array_equal(result, self._expected())
@@ -318,7 +387,7 @@ class TestRegridSingleLevel(unittest.TestCase):
         result = agg(self.data, self.sx_points, self.sx_bounds,
                      self.sy_points, self.sy_bounds,
                      self.sx_dim, self.sy_dim,
-                     self.gx_bounds, self.gy_bounds)
+                     self.gx_bounds, self.gy_bounds, self.depth)
         expected = self._expected()
         expected[0, 1] = ma.masked
         assert_array_equal(result, self._expected())
@@ -328,7 +397,7 @@ class TestRegridSingleLevel(unittest.TestCase):
         result = agg(self.data, self.sx_points, self.sx_bounds,
                      self.sy_points, self.sy_bounds,
                      self.sx_dim, self.sy_dim,
-                     self.gx_bounds, self.gy_bounds)
+                     self.gx_bounds, self.gy_bounds, self.depth)
         expected = self._expected()
         expected[1, 0] = ma.masked
         assert_array_equal(result, self._expected())
@@ -338,7 +407,7 @@ class TestRegridSingleLevel(unittest.TestCase):
         result = agg(self.data, self.sx_points, self.sx_bounds,
                      self.sy_points, self.sy_bounds,
                      self.sx_dim, self.sy_dim,
-                     self.gx_bounds, self.gy_bounds)
+                     self.gx_bounds, self.gy_bounds, self.depth)
         expected = self._expected()
         expected[1, 1] = ma.masked
         assert_array_equal(result, self._expected())
@@ -350,7 +419,7 @@ class TestRegridSingleLevel(unittest.TestCase):
             agg(self.data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
-                self.gx_bounds, self.gy_bounds)
+                self.gx_bounds, self.gy_bounds, self.depth)
 
     def test_regrid_irregular_src_y_points(self):
         self.sy_points[0] = self.sy_points[0] * 1.01
@@ -359,7 +428,7 @@ class TestRegridSingleLevel(unittest.TestCase):
             agg(self.data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
-                self.gx_bounds, self.gy_bounds)
+                self.gx_bounds, self.gy_bounds, self.depth)
 
 
 if __name__ == '__main__':
