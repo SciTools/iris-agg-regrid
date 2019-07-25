@@ -4,9 +4,12 @@
 
 [run]
 branch = True
+include =
+    agg_regrid/*
 omit = 
     setup.py
     agg_regrid/tests/*
+plugins = Cython.Coverage
 
 
 [report]
