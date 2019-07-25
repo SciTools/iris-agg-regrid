@@ -3,6 +3,7 @@
 #
 
 [run]
+plugins = Cython.Coverage
 branch = True
 omit = 
     setup.py

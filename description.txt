@@ -1,0 +1,1 @@
+agg-regrid is a cross-coordinate system, conservative area-weighted regridder, which uses the Anti-Grain Geometry (AGG) to rasterise the conversion of a source Iris cube to a target grid.

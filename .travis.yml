@@ -1,11 +1,6 @@
 language: minimal
 dist: xenial
 
-python:
-  - 2.7
-  - 3.6
-  - 3.7
-
 env:
   matrix:
     - PYTHON_VERSION="2.7"
@@ -48,10 +43,13 @@ install:
   - conda list -n ${ENV_NAME} --explicit
   - conda info -a
 
+  # Enable coverage for Cython
+  # --------------------------
+  - export CYTHON_COVERAGE=1
+
   # Build the package
   # -----------------
   - pip install -e .
-
 
 script:
   - coverage run setup.py test
