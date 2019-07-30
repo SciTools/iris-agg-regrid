@@ -46,6 +46,17 @@ class Test(unittest.TestCase):
             expected = [mock.call(self.src, self.tgt, buffer_depth=self.depth)]
             self.assertEqual(mocker.mock_calls, expected)
 
+    def test_regridder_with_buffer_depth(self):
+        depth = mock.sentinel.buffer_depth
+        regridder = 'agg_regrid._AreaWeightedRegridder'
+        with mock.patch(regridder, autospec=True,
+                        return_value=self.regridder) as mocker:
+            scheme = AreaWeighted(buffer_depth=depth)
+            result = scheme.regridder(self.src, self.tgt)
+            self.assertEqual(result, self.regridder)
+            expected = [mock.call(self.src, self.tgt, buffer_depth=depth)]
+            self.assertEqual(mocker.mock_calls, expected)
+
 
 if __name__ == '__main__':
     unittest.main()

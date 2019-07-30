@@ -117,14 +117,12 @@ class Test___call__(unittest.TestCase):
         self.tgt_cube = mock.Mock(spec=iris.cube.Cube)
         self.sx_dim = mock.sentinel.sx_dim
         self.sy_dim = mock.sentinel.sy_dim
-        coord_dims = mock.Mock(side_effect=([self.sx_dim], [self.sy_dim]))
+        coord_dims = mock.Mock(side_effect=([self.sx_dim], [self.sy_dim],
+                                            [self.sx_dim], [self.sy_dim]))
         self.metadata = dict(standard_name='air_pressure',
                              long_name='long_name', var_name='var_name',
                              units='Pa', attributes={}, cell_methods=())
         self.data = mock.sentinel.data
-        self.cube = mock.Mock(spec=iris.cube.Cube, coord_dims=coord_dims,
-                              metadata=self.metadata, dim_coords=(),
-                              aux_coords=(), data=self.data)
         scrs = mock.sentinel.scrs
         self.sxp = mock.sentinel.sx_points
         self.sxb = mock.sentinel.sx_contiguous_bounds
@@ -141,10 +139,14 @@ class Test___call__(unittest.TestCase):
         gy = mock.Mock(coord_system=tcrs)
         self.src_grid = (self.sx, self.sy)
         tgt_grid = (gx, gy)
+        dim_coords = [self.sx, self.sy]
+        self.cube = mock.Mock(spec=iris.cube.Cube, coord_dims=coord_dims,
+                              metadata=self.metadata, dim_coords=dim_coords,
+                              aux_coords=(), data=self.data)
         self.side_effect = (self.src_grid, tgt_grid)
         self.snapshot_grid = 'agg_regrid.snapshot_grid'
         self.get_xy_dim_coords = 'agg_regrid.get_xy_dim_coords'
-        self.depth = DEFAULT_BUFFER_DEPTH
+        self.depth = mock.sentinel.buffer_depth
 
     def test_bad_src_cube(self):
         with mock.patch(self.snapshot_grid, side_effect=self.side_effect):
@@ -179,10 +181,14 @@ class Test___call__(unittest.TestCase):
                 gxx, gyy = (mock.sentinel.gxx, mock.sentinel.gyy)
                 with mock.patch('numpy.meshgrid', return_value=(gxx, gyy)):
                     data = 1
-                    with mock.patch('agg_regrid.agg',
-                                    return_value=data) as magg:
-                        regridder = Regridder(self.src_cube, self.tgt_cube)
-                        result = regridder(self.cube)
+                    mock_agg = 'agg_regrid.agg'
+                    with mock.patch(mock_agg, return_value=data) as magg:
+                        mock_add_dim_coord = 'iris.cube.Cube.add_dim_coord'
+                        with mock.patch(mock_add_dim_coord) as madd:
+                            regridder = Regridder(self.src_cube,
+                                                  self.tgt_cube,
+                                                  buffer_depth=self.depth)
+                            result = regridder(self.cube)
 
         self.assertEqual(regridder._sx_bounds, self.sxb)
         self.assertEqual(regridder._sy_bounds, self.syb)
@@ -192,9 +198,13 @@ class Test___call__(unittest.TestCase):
                               self.syb, self.sx_dim, self.sy_dim, gxx, gyy,
                               self.depth)]
         self.assertEqual(magg.call_args_list, expected)
+        expected = [mock.call(self.sx.copy(), [self.sx_dim]),
+                    mock.call(self.sy.copy(), [self.sy_dim])]
+        self.assertEqual(madd.call_args_list, expected)
         cube = iris.cube.Cube(data)
         cube.metadata = self.metadata
         self.assertEqual(result, cube)
+        self.assertEqual(regridder.buffer_depth, self.depth)
 
 
 if __name__ == '__main__':
