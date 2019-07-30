@@ -1,4 +1,4 @@
-# (C) British Crown Copyright 2015 - 2018, Met Office
+# (C) British Crown Copyright 2015 - 2019, Met Office
 #
 # This file is part of agg-regrid.
 #
@@ -210,8 +210,14 @@ class _AreaWeightedRegridder(object):
         sx_dim = src_cube.coord_dims(sx)[0]
         sy_dim = src_cube.coord_dims(sy)[0]
 
+        # Manipulating masked arrays can be of the order 4-5 times slower,
+        # therefore use the underlying numpy array if there are no masked data
+        data = src_cube.data
+        if ma.isMA(data) and not ma.is_masked(data):
+            data = data.data
+
         # Perform the regrid.
-        result = agg(src_cube.data, sx.points, self._sx_bounds,
+        result = agg(data, sx.points, self._sx_bounds,
                      sy.points, self._sy_bounds, sx_dim, sy_dim,
                      self._gx_bounds, self._gy_bounds, self.buffer_depth)
 
@@ -319,24 +325,22 @@ def agg(data, sx_points, sx_bounds, sy_points, sy_bounds,
         raise ValueError(emsg.format(data.ndim))
 
     # Account for negative indexing ...
-    dim = sx_dim
     if sx_dim < 0:
-        sx_dim = ndim + sx_dim
+        sx_dim += ndim
 
     if sx_dim not in dims:
         emsg = 'Invalid src x-coordinate dimension, got {} expected ' \
             'within range {}-{}.'
-        raise ValueError(emsg.format(dim, dims[0], dims[-1]))
+        raise ValueError(emsg.format(sx_dim, dims[0], dims[-1]))
 
     # Account for negative indexing ...
-    dim = sy_dim
     if sy_dim < 0:
-        sy_dim = ndim + sy_dim
+        sy_dim += ndim
 
     if sy_dim not in dims:
         emsg = 'Invalid src y-coordinate dimension, got {} expected ' \
             'within range {}-{}.'
-        raise ValueError(emsg.format(dim, dims[0], dims[-1]))
+        raise ValueError(emsg.format(sy_dim, dims[0], dims[-1]))
 
     # Determine the source data shape ...
     shape = data.shape
