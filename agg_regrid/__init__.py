@@ -464,8 +464,10 @@ def agg(data, sx_points, sx_bounds, sy_points, sy_bounds,
                 weights = _sum_chunk(_sum_chunk(weights, depth), depth, 0)
             weights = weights / (depth*depth*255)
             # Now calculate the weighted result for this grid cell.
-            tmp = data[:, yi_min:yi_max, xi_min:xi_max]
-            result[:, yi, xi] = (tmp * weights).sum(axis=dims) / weights.sum()
+            wsum = weights.sum()
+            if wsum:
+                tmp = data[:, yi_min:yi_max, xi_min:xi_max]
+                result[:, yi, xi] = (tmp * weights).sum(axis=dims) / wsum
 
     if result.shape != result_shape:
         result = result.reshape(result_shape)
