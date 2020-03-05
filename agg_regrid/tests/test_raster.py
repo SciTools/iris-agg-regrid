@@ -1,4 +1,4 @@
-# (C) British Crown Copyright 2015 - 2018, Met Office
+# (C) British Crown Copyright 2015 - 2020, Met Office
 #
 # This file is part of agg-regrid.
 #
@@ -15,10 +15,6 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with agg-regrid.  If not, see <http://www.gnu.org/licenses/>.
 """Unit tests for the `agg_regrid._agg.raster` function."""
-
-from __future__ import (absolute_import, division, print_function)
-from six.moves import (filter, input, map, range, xrange, zip)  # noqa
-from six import assertRaisesRegex
 
 import numpy as np
 from numpy.testing import assert_array_equal
@@ -37,17 +33,17 @@ class TestDataType(unittest.TestCase):
 
     def test_weights_bad_dtype(self):
         weights = np.zeros((5, 5))
-        with assertRaisesRegex(self, ValueError, self.emsg):
+        with self.assertRaisesRegex(ValueError, self.emsg):
             raster(weights, self.xi, self.yi)
 
     def test_xi_bad_dtype(self):
         xi = np.arange(4).reshape(2, 2)
-        with assertRaisesRegex(self, ValueError, self.emsg):
+        with self.assertRaisesRegex(ValueError, self.emsg):
             raster(self.weights, xi, self.yi)
 
     def test_yi_bad_dtype(self):
         yi = np.arange(4).reshape(2, 2)
-        with assertRaisesRegex(self, ValueError, self.emsg):
+        with self.assertRaisesRegex(ValueError, self.emsg):
             raster(self.weights, self.xi, yi)
 
 
@@ -61,17 +57,17 @@ class TestShape(unittest.TestCase):
 
     def test_weights_bad_shape(self):
         weights = self.weights.flatten()
-        with assertRaisesRegex(self, ValueError, self.emsg):
+        with self.assertRaisesRegex(ValueError, self.emsg):
             raster(weights, self.xi, self.yi)
 
     def test_xi_bad_shape(self):
         xi = self.xi.flatten()
-        with assertRaisesRegex(self, ValueError, self.emsg):
+        with self.assertRaisesRegex(ValueError, self.emsg):
             raster(self.weights, xi, self.yi)
 
     def test_yi_bad_shape(self):
         yi = self.yi.flatten()
-        with assertRaisesRegex(self, ValueError, self.emsg):
+        with self.assertRaisesRegex(ValueError, self.emsg):
             raster(self.weights, self.xi, yi)
 
 
