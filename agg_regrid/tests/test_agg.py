@@ -1,4 +1,4 @@
-# (C) British Crown Copyright 2015 - 2018, Met Office
+# (C) British Crown Copyright 2015 - 2020, Met Office
 #
 # This file is part of agg-regrid.
 #
@@ -15,10 +15,6 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with agg-regrid.  If not, see <http://www.gnu.org/licenses/>.
 """Unit tests for the `agg_regrid.agg` function."""
-
-from __future__ import (absolute_import, division, print_function)
-from six.moves import (filter, input, map, range, xrange, zip)  # noqa
-from six import assertRaisesRegex
 
 import numpy as np
 import numpy.ma as ma
@@ -44,7 +40,7 @@ class TestDimensionality(unittest.TestCase):
     def test_src_x_points(self):
         sx_points = self.sx_points.reshape(1, -1)
         emsg = 'Expected 1d src x-coordinate points'
-        with assertRaisesRegex(self, ValueError, emsg):
+        with self.assertRaisesRegex(ValueError, emsg):
             agg(self.data, sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
@@ -53,7 +49,7 @@ class TestDimensionality(unittest.TestCase):
     def test_src_y_points(self):
         sy_points = self.sy_points.reshape(1, -1)
         emsg = 'Expected 1d src y-coordinate points'
-        with assertRaisesRegex(self, ValueError, emsg):
+        with self.assertRaisesRegex(ValueError, emsg):
             agg(self.data, self.sx_points, self.sx_bounds,
                 sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
@@ -62,7 +58,7 @@ class TestDimensionality(unittest.TestCase):
     def test_src_x_bounds(self):
         sx_bounds = self.sx_bounds.reshape(1, -1)
         emsg = 'Expected 1d contiguous src x-coordinate bounds'
-        with assertRaisesRegex(self, ValueError, emsg):
+        with self.assertRaisesRegex(ValueError, emsg):
             agg(self.data, self.sx_points, sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
@@ -71,7 +67,7 @@ class TestDimensionality(unittest.TestCase):
     def test_src_y_bounds(self):
         sy_bounds = self.sy_bounds.reshape(1, -1)
         emsg = 'Expected 1d contiguous src y-coordinate bounds'
-        with assertRaisesRegex(self, ValueError, emsg):
+        with self.assertRaisesRegex(ValueError, emsg):
             agg(self.data, self.sx_points, self.sx_bounds,
                 self.sy_points, sy_bounds,
                 self.sx_dim, self.sy_dim,
@@ -80,7 +76,7 @@ class TestDimensionality(unittest.TestCase):
     def test_data(self):
         data = self.data.flatten()
         emsg = 'Expected at least 2d src data'
-        with assertRaisesRegex(self, ValueError, emsg):
+        with self.assertRaisesRegex(ValueError, emsg):
             agg(data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
@@ -90,7 +86,7 @@ class TestDimensionality(unittest.TestCase):
         # Positive index beyond last dimension.
         sx_dim = self.data.ndim
         emsg = 'Invalid src x-coordinate dimension'
-        with assertRaisesRegex(self, ValueError, emsg):
+        with self.assertRaisesRegex(ValueError, emsg):
             agg(self.data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 sx_dim, self.sy_dim,
@@ -100,7 +96,7 @@ class TestDimensionality(unittest.TestCase):
         # Negative index before first dimension.
         sy_dim = -(self.data.ndim + 1)
         emsg = 'Invalid src y-coordinate dimension'
-        with assertRaisesRegex(self, ValueError, emsg):
+        with self.assertRaisesRegex(ValueError, emsg):
             agg(self.data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, sy_dim,
@@ -109,7 +105,7 @@ class TestDimensionality(unittest.TestCase):
     def test_grid_x_bounds(self):
         gx_bounds = self.gx_bounds.flatten()
         emsg = 'Expected 2d contiguous grid x-coordinate bounds'
-        with assertRaisesRegex(self, ValueError, emsg):
+        with self.assertRaisesRegex(ValueError, emsg):
             agg(self.data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
@@ -118,7 +114,7 @@ class TestDimensionality(unittest.TestCase):
     def test_grid_y_bounds(self):
         gy_bounds = self.gy_bounds.flatten()
         emsg = 'Expected 2d contiguous grid y-coordinate bounds'
-        with assertRaisesRegex(self, ValueError, emsg):
+        with self.assertRaisesRegex(ValueError, emsg):
             agg(self.data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
@@ -141,7 +137,7 @@ class TestShape(unittest.TestCase):
     def test_src_x_points_and_bounds(self):
         sx_points = np.arange(self.nx - 1)
         emsg = 'Invalid number of src x-coordinate bounds'
-        with assertRaisesRegex(self, ValueError, emsg):
+        with self.assertRaisesRegex(ValueError, emsg):
             agg(self.data, sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
@@ -150,7 +146,7 @@ class TestShape(unittest.TestCase):
     def test_src_y_points_and_bounds(self):
         sy_points = np.arange(self.ny - 1)
         emsg = 'Invalid number of src y-coordinate bounds'
-        with assertRaisesRegex(self, ValueError, emsg):
+        with self.assertRaisesRegex(ValueError, emsg):
             agg(self.data, self.sx_points, self.sx_bounds,
                 sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
@@ -161,7 +157,7 @@ class TestShape(unittest.TestCase):
         shape[self.sx_dim] = self.nx + 1
         data = np.empty(shape)
         emsg = 'src x-coordinate points .* do not align'
-        with assertRaisesRegex(self, ValueError, emsg):
+        with self.assertRaisesRegex(ValueError, emsg):
             agg(data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
@@ -172,7 +168,7 @@ class TestShape(unittest.TestCase):
         shape[self.sy_dim] = self.ny - 1
         data = np.empty(shape)
         emsg = 'src y-coordinate points .* do not align'
-        with assertRaisesRegex(self, ValueError, emsg):
+        with self.assertRaisesRegex(ValueError, emsg):
             agg(data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
@@ -182,7 +178,7 @@ class TestShape(unittest.TestCase):
         shape = np.array(self.gy_bounds.shape) + 1
         gy_bounds = np.empty(shape)
         emsg = 'Misaligned grid'
-        with assertRaisesRegex(self, ValueError, emsg):
+        with self.assertRaisesRegex(ValueError, emsg):
             agg(self.data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
@@ -415,7 +411,7 @@ class TestRegridSingleLevel(unittest.TestCase):
     def test_regrid_irregular_src_x_points(self):
         self.sx_points[-1] = self.sx_points[-1] * 1.1
         emsg = 'Expected src x-coordinate points to be regular'
-        with assertRaisesRegex(self, ValueError, emsg):
+        with self.assertRaisesRegex(ValueError, emsg):
             agg(self.data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,
@@ -424,7 +420,7 @@ class TestRegridSingleLevel(unittest.TestCase):
     def test_regrid_irregular_src_y_points(self):
         self.sy_points[0] = self.sy_points[0] * 1.01
         emsg = 'Expected src y-coordinate points to be regular'
-        with assertRaisesRegex(self, ValueError, emsg):
+        with self.assertRaisesRegex(ValueError, emsg):
             agg(self.data, self.sx_points, self.sx_bounds,
                 self.sy_points, self.sy_bounds,
                 self.sx_dim, self.sy_dim,

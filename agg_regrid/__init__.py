@@ -1,4 +1,4 @@
-# (C) British Crown Copyright 2015 - 2019, Met Office
+# (C) British Crown Copyright 2015 - 2020, Met Office
 #
 # This file is part of agg-regrid.
 #
@@ -15,9 +15,6 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with agg-regrid.  If not, see <http://www.gnu.org/licenses/>.
 """A package for experimental regridding functionality."""
-
-from __future__ import (absolute_import, division, print_function)
-from six.moves import (filter, input, map, range, zip)  # noqa
 
 import copy
 from math import ceil, floor
@@ -39,7 +36,7 @@ __version__ = '0.3.dev0'
 DEFAULT_BUFFER_DEPTH = 8
 
 
-class AreaWeighted(object):
+class AreaWeighted:
     def __init__(self, buffer_depth=None):
         """
         Anti-Grain Geometry (AGG) regridding scheme for performing
@@ -89,7 +86,7 @@ class AreaWeighted(object):
                                       buffer_depth=self.buffer_depth)
 
 
-class _AreaWeightedRegridder(object):
+class _AreaWeightedRegridder:
     """
     This class provides support for performing area-weighted regridding.
 

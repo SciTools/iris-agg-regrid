@@ -1,4 +1,4 @@
-# (C) British Crown Copyright 2015 - 2018, Met Office
+# (C) British Crown Copyright 2015 - 2020, Met Office
 #
 # This file is part of agg-regrid.
 #
@@ -15,6 +15,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with agg-regrid.  If not, see <http://www.gnu.org/licenses/>.
 """Tests for agg_regrid."""
-
-from __future__ import (absolute_import, division, print_function)
-from six.moves import (filter, input, map, range, xrange, zip)  # noqa

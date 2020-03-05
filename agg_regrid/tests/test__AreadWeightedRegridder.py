@@ -1,4 +1,4 @@
-# (C) British Crown Copyright 2015 - 2019, Met Office
+# (C) British Crown Copyright 2015 - 2020, Met Office
 #
 # This file is part of agg-regrid.
 #
@@ -16,17 +16,10 @@
 # along with agg-regrid.  If not, see <http://www.gnu.org/licenses/>.
 """Unit tests for the `agg_regrid._AreaWeightedRegridder` class."""
 
-from __future__ import (absolute_import, division, print_function)
-from six.moves import (filter, input, map, range, xrange, zip)  # noqa
-from six import assertRaisesRegex
-
 import unittest
 
 import iris
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+from unittest import mock
 import numpy.ma as ma
 
 from agg_regrid import (_AreaWeightedRegridder as Regridder,
@@ -50,12 +43,12 @@ class Test(unittest.TestCase):
 
     def test_bad_src_grid_cube(self):
         emsg = 'source grid must be a cube'
-        with assertRaisesRegex(self, TypeError, emsg):
+        with self.assertRaisesRegex(TypeError, emsg):
             Regridder('dummy', self.tgt_cube)
 
     def test_bad_tgt_grid_cube(self):
         emsg = 'target grid must be a cube'
-        with assertRaisesRegex(self, TypeError, emsg):
+        with self.assertRaisesRegex(TypeError, emsg):
             Regridder(self.src_cube, 'dummy')
 
     def test_src_grid_tgt_grid(self):
@@ -78,7 +71,7 @@ class Test(unittest.TestCase):
 
         with mock.patch(self.snapshot_grid, side_effect=side_effect):
             emsg = 'source grid cube requires a native coordinate system'
-            with assertRaisesRegex(self, ValueError, emsg):
+            with self.assertRaisesRegex(ValueError, emsg):
                 Regridder(self.src_cube, self.tgt_cube)
 
     def test_snapshot_grid__no_sy_coord_system(self):
@@ -88,7 +81,7 @@ class Test(unittest.TestCase):
 
         with mock.patch(self.snapshot_grid, side_effect=side_effect):
             emsg = 'source grid cube requires a native coordinate system'
-            with assertRaisesRegex(self, ValueError, emsg):
+            with self.assertRaisesRegex(ValueError, emsg):
                 Regridder(self.src_cube, self.tgt_cube)
 
     def test_snapshot_grid__no_gx_coord_system(self):
@@ -98,7 +91,7 @@ class Test(unittest.TestCase):
 
         with mock.patch(self.snapshot_grid, side_effect=side_effect):
             emsg = 'target grid cube requires a native coordinate system'
-            with assertRaisesRegex(self, ValueError, emsg):
+            with self.assertRaisesRegex(ValueError, emsg):
                 Regridder(self.src_cube, self.tgt_cube)
 
     def test_snapshot_grid__no_gy_coord_system(self):
@@ -108,7 +101,7 @@ class Test(unittest.TestCase):
 
         with mock.patch(self.snapshot_grid, side_effect=side_effect):
             emsg = 'target grid cube requires a native coordinate system'
-            with assertRaisesRegex(self, ValueError, emsg):
+            with self.assertRaisesRegex(ValueError, emsg):
                 Regridder(self.src_cube, self.tgt_cube)
 
 
@@ -156,7 +149,7 @@ class Test___call__(unittest.TestCase):
     def test_bad_src_cube(self):
         with mock.patch(self.snapshot_grid, side_effect=self.side_effect):
             emsg = 'source must be a cube'
-            with assertRaisesRegex(self, TypeError, emsg):
+            with self.assertRaisesRegex(TypeError, emsg):
                 regridder = Regridder(self.src_cube, self.tgt_cube)
                 regridder('dummy')
 
@@ -165,7 +158,7 @@ class Test___call__(unittest.TestCase):
             return_value = (False, self.sy)
             with mock.patch(self.get_xy_dim_coords, return_value=return_value):
                 emsg = 'source cube is not defined on the same source grid'
-                with assertRaisesRegex(self, ValueError, emsg):
+                with self.assertRaisesRegex(ValueError, emsg):
                     regridder = Regridder(self.src_cube, self.tgt_cube)
                     regridder(self.cube)
 
@@ -174,7 +167,7 @@ class Test___call__(unittest.TestCase):
             return_value = (self.sx, False)
             with mock.patch(self.get_xy_dim_coords, return_value=return_value):
                 emsg = 'source cube is not defined on the same source grid'
-                with assertRaisesRegex(self, ValueError, emsg):
+                with self.assertRaisesRegex(ValueError, emsg):
                     regridder = Regridder(self.src_cube, self.tgt_cube)
                     regridder(self.cube)
 
