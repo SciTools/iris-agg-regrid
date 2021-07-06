@@ -19,6 +19,7 @@
 import unittest
 
 import iris
+import cf_units
 from unittest import mock
 import numpy.ma as ma
 
@@ -122,8 +123,10 @@ class Test___call__(unittest.TestCase):
         self.sxb = mock.sentinel.sx_contiguous_bounds
         self.syp = mock.sentinel.sy_points
         self.syb = mock.sentinel.sy_contiguous_bounds
+        self.sunits = mock.Mock(spec=cf_units.Unit)
         self.sx = mock.Mock(coord_system=scrs,
                             points=self.sxp,
+                            units=self.sunits,
                             contiguous_bounds=mock.Mock(return_value=self.sxb))
         self.sy = mock.Mock(coord_system=scrs,
                             points=self.syp,
@@ -192,7 +195,7 @@ class Test___call__(unittest.TestCase):
         self.assertEqual(regridder._gy_bounds, gyy)
         expected = [mock.call(self.data, self.sxp, self.sxb, self.syp,
                               self.syb, self.sx_dim, self.sy_dim, gxx, gyy,
-                              self.depth)]
+                              self.depth, self.sunits.modulus)]
         self.assertEqual(magg.call_args_list, expected)
         expected = [mock.call(self.sx.copy(), [self.sx_dim]),
                     mock.call(self.sy.copy(), [self.sy_dim])]
@@ -218,7 +221,7 @@ class Test___call__(unittest.TestCase):
         gxx, gyy = self.gmesh
         expected = [mock.call(data.data, self.sxp, self.sxb, self.syp,
                               self.syb, self.sx_dim, self.sy_dim, gxx, gyy,
-                              DEFAULT_BUFFER_DEPTH)]
+                              DEFAULT_BUFFER_DEPTH, self.sunits.modulus)]
         self.assertEqual(magg.call_args_list, expected)
 
 
