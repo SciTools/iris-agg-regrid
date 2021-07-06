@@ -216,7 +216,8 @@ class _AreaWeightedRegridder:
         # Perform the regrid.
         result = agg(data, sx.points, self._sx_bounds,
                      sy.points, self._sy_bounds, sx_dim, sy_dim,
-                     self._gx_bounds, self._gy_bounds, self.buffer_depth)
+                     self._gx_bounds, self._gy_bounds,
+                     self.buffer_depth, sx.units.modulus)
 
         #
         # XXX: Need to deal the factories when constructing result cube.
@@ -243,7 +244,7 @@ class _AreaWeightedRegridder:
 
 
 def agg(data, sx_points, sx_bounds, sy_points, sy_bounds,
-        sx_dim, sy_dim, gx_bounds, gy_bounds, depth):
+        sx_dim, sy_dim, gx_bounds, gy_bounds, depth, modulus=None):
     """
     Perform a area-weighted regrid of the data using an Anti-Grain
     Geometry (AGG) backend to rasterise the conversion between the source
@@ -279,6 +280,8 @@ def agg(data, sx_points, sx_bounds, sy_points, sy_bounds,
     * depth:
         The depth (N) specifying the NxN pixel buffer to represent each source
         grid cell.
+    * modulus:
+        Optional modulus to use for x-coordinates.
 
     Returns:
         The data with same horizontal dimensionality as the target grid. The
@@ -437,8 +440,12 @@ def agg(data, sx_points, sx_bounds, sy_points, sy_bounds,
             # Get the bounding box of the grid cell in source coordinates.
             cell_x = gx_bounds[yi:yi_stop, xi:xi_stop]
             cell_y = gy_bounds[yi:yi_stop, xi:xi_stop]
+            # Wrap grid longitudes into the interval [sx0, sx0 + modulus]
+            wrap = 0
+            if modulus is not None:
+                wrap = np.floor((cell_x.max() - sx0) / modulus) * modulus
             # Convert to fractional source indices.
-            cell_xi = (cell_x - sx0) / sdx
+            cell_xi = (cell_x - sx0 - wrap) / sdx
             cell_yi = (cell_y - sy0) / sdy
             xi_min, xi_max = min(*cell_xi.flat), max(*cell_xi.flat)
             yi_min, yi_max = min(*cell_yi.flat), max(*cell_yi.flat)
