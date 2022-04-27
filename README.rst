@@ -1,3 +1,8 @@
+This Repository is Deprecated
+=============================
+
+Please note that this repository is now deprecated and unsupported.
+
 agg-regrid
 ==========
 
